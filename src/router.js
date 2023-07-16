@@ -3,7 +3,9 @@ import Login from './pages/LogIn.vue';
 import Signup from './pages/SignUp.vue';
 import CharacterViewer from "./pages/CharacterViewer.vue";
 import CharacterCreator from "./pages/CharacterCreator.vue";
+import Home from "./pages/LandingPage.vue";
 const routes = [
+    {path: "/", component: Home},
     {path: '/login', component: Login },
     {path: '/signup', component: Signup},
     {path: '/character-viewer', component: CharacterViewer, props: true, },

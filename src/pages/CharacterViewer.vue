@@ -1,6 +1,6 @@
 <template>
   <div class="character-viewer">
-    <h1>Character Viewer</h1>
+    <h1>Characters</h1>
     <!-- Loop through each character in the characters array -->
     <p v-for="(character, index) in characters" v-bind:key="index">
       <!-- Display the name and profession of each character -->
@@ -51,4 +51,7 @@ export default {
 
 <style scoped>
 /* CSS styles specific to this component */
+h1 {
+  color: red;
+}
 </style>

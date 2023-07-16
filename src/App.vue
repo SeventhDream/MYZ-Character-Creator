@@ -1,22 +1,33 @@
 <template>
-  <div id="app">
-    <router-link to="/character-viewer">View All Characters</router-link>
-    <router-link to="/character-creator">Create a Character</router-link>
-    <router-view :characters="characters"
-  :getCharacters="getCharacters"></router-view>
+  <NavBar />
+
+  <div class="container main-content" :class="{ 'offset-menu': isMenuVisible }">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <!--router-link to="/character-viewer">View All Characters</router-link-->
+          <!--router-link to="/character-creator">Create a Character</router-link-->
+          <router-view :characters="characters" :getCharacters="getCharacters"></router-view>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import NavBar from './components/NavBar.vue';
 import axios from "axios";
 import eventBus from './event-bus.js';
 
 export default {
   name: "App",
-
+  components: {
+    NavBar
+  },
   data: function () {
     return {
       characters: null, // Data property to hold the characters retrieved from the server
+      isMenuVisible: false,
     };
   },
   methods: {
@@ -32,6 +43,9 @@ export default {
   },
   mounted: function () {
     console.log("App component mounted.");
+    eventBus.on('menu-visibility-changed', () => {
+      this.isMenuVisible = !this.isMenuVisible;
+    });
     // Subscribe to the character deleted event
     eventBus.on('character-deleted', this.handleCharacterDeleted);
 
@@ -49,91 +63,30 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
 
-* {
-  box-sizing: border-box;
+.main-content {
+  transition: margin-left 0.3s ease-in-out;
+  width: 100vw;
+  height: 100vh;
 }
 
-body {
-  background: #1c8ef9 !important;
-  min-heihgt: 100vh;
-  display: flex;
-  font-weight: 400;
-  font-family: "Fira Sans", sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-label,
-span {
-  font-weight: 500;
-  font-family: "Fira Sans", sans-seriff;
-}
-
-body,
-html,
-#app,
-#root,
-.auth-wrapper {
-  width: 100%;
-  height: 100%;
+.offset-menu {
+  margin-left: 200px; /* Set the width of the menu */
 }
 
 #app {
-  text-align: center;
+  background-color: #000000;
 }
-
-.navbar-light {
-  background-color: #ffffff;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+@media (min-width: 992px) {
+  #app {
+    margin-left: 200px;
+  }
 }
-
-.auth-wrapper {
+.box{
   display: flex;
   justify-content: center;
-  flex-direction: column;
-  text-align: left;
+  align-items: center;
+  width: 100%;
+
 }
 
-.auth-inner {
-  width: 450px;
-  margin: auto;
-  background: #ffffff;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 45px 55px;
-  border-radius: 15px;
-  transition: all 0.3s;
-}
-
-.auth-wrapper .form-control:focus {
-  border-color: #167bff;
-  box-shadow: none;
-}
-
-.auth-wrapper h3 {
-  text-align: center;
-  margin: 0;
-  line-height: 1;
-  padding-bottom: 20px;
-}
-
-.custom-control-label {
-  font-weight: 400;
-}
-
-.forgot-password,
-.forgot-password a {
-  text-align: right;
-  font-size: 13px;
-  padding-top: 10px;
-  color: #7f7d7d;
-  margin: 0;
-}
-
-.forgot-password a {
-  color: #167bff;
-}
 </style>
