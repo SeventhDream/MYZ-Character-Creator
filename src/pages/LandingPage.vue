@@ -1,7 +1,7 @@
 <template>
 <div class="landing-page">
 <br>
-<img src="../images/icons8-virus-dna-64.png" alt="Italian Trulli" width="200">
+<img src="../images/icon-skull-invert-nobg.png" alt="Italian Trulli" width="200">
 <h1>MUTANT: YEAR ZERO - CHARACTER GENERATOR</h1>
 <hr />
 <div>

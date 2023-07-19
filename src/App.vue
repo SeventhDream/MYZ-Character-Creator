@@ -1,13 +1,18 @@
 <template>
-  <NavBar />
+  <div id="app">
+    <NavBar ref="navbar" />
 
-  <div class="container main-content" :class="{ 'offset-menu': isMenuVisible }">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="box">
-          <!--router-link to="/character-viewer">View All Characters</router-link-->
-          <!--router-link to="/character-creator">Create a Character</router-link-->
-          <router-view :characters="characters" :getCharacters="getCharacters"></router-view>
+    <div class="container main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <!--router-link to="/character-viewer">View All Characters</router-link-->
+            <!--router-link to="/character-creator">Create a Character</router-link-->
+            <router-view
+              :characters="characters"
+              :getCharacters="getCharacters"
+            ></router-view>
+          </div>
         </div>
       </div>
     </div>
@@ -15,50 +20,53 @@
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue';
+import NavBar from "./components/NavBar.vue";
 import axios from "axios";
-import eventBus from './event-bus.js';
+import eventBus from "./event-bus.js";
 
 export default {
   name: "App",
   components: {
-    NavBar
+    NavBar,
   },
   data: function () {
     return {
       characters: null, // Data property to hold the characters retrieved from the server
-      isMenuVisible: false,
     };
   },
   methods: {
-    getCharacters: function () {
-      // Make an HTTP GET request to retrieve characters from the server
-      axios
-        .get("http://localhost:3000/characters")
-        .then((response) => (this.characters = response.data)); // Store the retrieved characters in the data property
-    },
-    handleCharacterDeleted(id) {
-      this.characters = this.characters.filter((character) => character._id !== id);
+    getCharacters() {
+      this.$refs.navbar.updateUsername();
+      const token = localStorage.getItem("token");
+      if (token) {
+        axios
+          .get("http://localhost:3000/characters", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.characters = response.data;
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
     },
   },
   mounted: function () {
     console.log("App component mounted.");
-    eventBus.on('menu-visibility-changed', () => {
-      this.isMenuVisible = !this.isMenuVisible;
-    });
     // Subscribe to the character deleted event
-    eventBus.on('character-deleted', this.handleCharacterDeleted);
+    eventBus.on("character-deleted", this.handleCharacterDeleted);
 
     this.getCharacters(); // Retrieve characters when the component is mounted
   },
   beforeUnmount() {
     // Unsubscribe from the character deleted event
-    eventBus.off('character-deleted', this.handleCharacterDeleted);
+    eventBus.off("character-deleted", this.handleCharacterDeleted);
   },
 };
 </script>
-
-
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
@@ -75,18 +83,20 @@ export default {
 
 #app {
   background-color: #000000;
+  background-image: url("./images/backdrop3.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 @media (min-width: 992px) {
   #app {
-    margin-left: 200px;
+    margin-left: 199px;
   }
 }
-.box{
+.box {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-
 }
-
 </style>

@@ -30,6 +30,11 @@
     </select>
     <br><br>
 
+    <!-- Input field for image URL -->
+    <label for="image-url">Image URL: </label>
+    <input type="text" id="image-url" v-model="avatar" placeholder="Enter an image URL" />
+    <br><br>
+
     <!-- Button to create the character -->
     <button v-on:click="postCharacter">Create Character</button>
   </div>
@@ -45,24 +50,33 @@
         return {
           name: null, // Data property to hold the character's name
           profession: null, // Data property to hold the character's profession
-          mutation: null // Data property to hold the character's mutation
+          mutation: null, // Data property to hold the character's mutation
+          avatar: null,
         }
       },
       
       methods: {
         postCharacter: function () {
+          
+          // Assign a default image URL if the imageUrl field is empty
+          console.log(this.imageUrl);
+          if (!this.avatar) {
+            this.avatar = 'http://localhost:3000/default-profile.jpg';
+          }
+
           console.log({
             name: this.name,
             profession: this.profession,
-            mutation: this.mutation
+            mutation: this.mutation,
+            avatar: this.avatar
           });
-
           // Make an HTTP POST request to create a new character
           axios
               .post('http://localhost:3000/characters', {
                 name: this.name, // Pass the character's name
                 profession: this.profession, // Pass the character's profession
-                mutation: this.mutation // Pass the character's mutation
+                mutation: this.mutation, // Pass the character's mutation
+                avatar: this.avatar
               });
         }
       }

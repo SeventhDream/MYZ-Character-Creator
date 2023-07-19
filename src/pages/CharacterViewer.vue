@@ -1,48 +1,74 @@
 <template>
   <div class="character-viewer">
     <h1>Characters</h1>
-    <!-- Loop through each character in the characters array -->
-    <p v-for="(character, index) in characters" v-bind:key="index">
-      <!-- Display the name and profession of each character -->
-      {{ character.name }} is a {{ character.profession }} with mutation:
-      {{ character.mutation }}
-      <button @click="deleteCharacter(character._id)">Delete</button>
-    </p>
+    <div
+      class="character-card"
+      v-for="(character, index) in characters"
+      :key="index"
+    >
+      <img
+        :src="getCharacterImage(character)"
+        alt="Character Image"
+        class="character-image"
+        @error="handleImageError"
+      />
+      <div class="character-footer">
+        <h2 class="character-name">{{ character.name }}</h2>
+        <p class="character-info">
+          {{ character.profession }} with mutation: {{ character.mutation }}
+        </p>
+        <button @click="deleteCharacter(character._id)" class="delete-button">
+          Delete
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import eventBus from '../event-bus.js';
+import eventBus from "../event-bus.js";
 export default {
   name: "CharacterViewer",
   props: {
     getCharacters: Function,
-    characters: Array, // Prop to receive an array of characters from the parent component
+    characters: Array,
   },
   methods: {
     deleteCharacter(id) {
       axios
         .delete(`http://localhost:3000/characters/${id}`)
         .then((response) => {
-          // Character successfully deleted
-          console.log(response.data); // Log the response data
-          eventBus.emit("character-deleted", id); // Emit an event to notify the parent component about the deleted character
+          console.log(response.data);
+          eventBus.emit("character-deleted", id);
         })
         .catch((error) => {
-          // Error occurred while deleting character
-          console.log(error.response.data); // Log the error response data
+          console.log(error.response.data);
         });
     },
+    getCharacterImage(character) {
+      if (character.avatar && this.isValidURL(character.avatar)) {
+        return character.avatar;
+      } else {
+        return "http://localhost:3000/default-profile.jpg";
+      }
+    },
+    isValidURL(url) {
+      const urlRegex = /^(http|https):\/\/[^ "]+$/;
+      return urlRegex.test(url);
+    },
+    handleImageError(event) {
+  event.preventDefault(); // Prevent the default error behavior
+  event.target.src = "http://localhost:3000/default-profile.jpg";
+},
+
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      // Fetch the characters when entering the route
       vm.$props.getCharacters();
     });
   },
   beforeRouteUpdate(to, from, next) {
-    // Fetch the characters when the route parameters change
     this.$props.getCharacters();
     next();
   },
@@ -53,5 +79,45 @@ export default {
 /* CSS styles specific to this component */
 h1 {
   color: red;
+}
+
+.character-card {
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.character-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.character-footer {
+  flex-grow: 1;
+}
+
+.character-name {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.character-info {
+  margin-bottom: 10px;
+}
+
+.delete-button {
+  background-color: #ff5252;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
 }
 </style>
