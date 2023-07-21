@@ -22,7 +22,7 @@
 <script>
 import NavBar from "./components/NavBar.vue";
 import axios from "axios";
-import eventBus from "./event-bus.js";
+
 
 export default {
   name: "App",
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     getCharacters() {
-      const token = localStorage.getItem("token");
+      const token = this.$store.state.user.token; // Access the authentication token from the Vuex store
       if (token) {
         axios
           .get("http://localhost:3000/characters", {
@@ -55,14 +55,12 @@ export default {
   },
   mounted: function () {
     console.log("App component mounted.");
-    // Subscribe to the character deleted event
-    eventBus.on("character-deleted", this.handleCharacterDeleted);
+
 
     
   },
   beforeUnmount() {
-    // Unsubscribe from the character deleted event
-    eventBus.off("character-deleted", this.handleCharacterDeleted);
+
   },
 };
 </script>

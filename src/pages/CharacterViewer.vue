@@ -27,7 +27,6 @@
 
 <script>
 import axios from "axios";
-import eventBus from "../event-bus.js";
 export default {
   name: "CharacterViewer",
   props: {
@@ -40,7 +39,7 @@ export default {
         .delete(`http://localhost:3000/characters/${id}`)
         .then((response) => {
           console.log(response.data);
-          eventBus.emit("character-deleted", id);
+          this.$props.getCharacters();
         })
         .catch((error) => {
           console.log(error.response.data);

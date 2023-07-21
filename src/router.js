@@ -4,6 +4,8 @@ import Signup from './pages/SignUp.vue';
 import CharacterViewer from "./pages/CharacterViewer.vue";
 import CharacterCreator from "./pages/CharacterCreator.vue";
 import Home from "./pages/LandingPage.vue";
+import store from './store/store';
+
 const routes = [
     { path: "/", component: Home },
     { path: '/login', component: Login },
@@ -13,7 +15,7 @@ const routes = [
         component: CharacterViewer,
         props: true,
         beforeEnter: (to, from, next) => {
-            const isAuthenticated = !!localStorage.getItem('token');// check if the user is authenticated, e.g., by checking the presence of a token in local storage or Vuex store
+            const isAuthenticated = store.state.user !== null;
           if (isAuthenticated) {
                 next(); // Proceed to the route
             } else {
