@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     getCharacters() {
-      this.$refs.navbar.updateUsername();
       const token = localStorage.getItem("token");
       if (token) {
         axios
@@ -59,7 +58,7 @@ export default {
     // Subscribe to the character deleted event
     eventBus.on("character-deleted", this.handleCharacterDeleted);
 
-    this.getCharacters(); // Retrieve characters when the component is mounted
+    
   },
   beforeUnmount() {
     // Unsubscribe from the character deleted event

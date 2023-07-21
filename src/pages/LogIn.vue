@@ -66,12 +66,16 @@ export default {
         .then((response) => {
           // Handle successful login
           const token = response.data.token;
+          const refreshToken = response.data.refreshToken;
           const message = response.data.message;
           const username = response.data.username;
-          // Save the token to local storage or Vuex store for future use
-          localStorage.setItem('token', token);
+          // After successful login, dispatch the setUser action to set the user data in Vuex store
+          this.$store.dispatch("setUser", {
+            username: username,
+            refreshToken: refreshToken,
+            token: token,
+          });
           this.success = message;
-          localStorage.setItem('username', username);
         })
         .catch((error) => {
           // Handle login error
@@ -82,10 +86,10 @@ export default {
             } else if (data.status === 401) {
               this.errors = { password: data.message };
             } else {
-              console.log('An error occurred:', data.message);
+              console.log("An error occurred:", data.message);
             }
           } else {
-            console.log('An error occurred:', error.message);
+            console.log("An error occurred:", error.message);
           }
         });
     },
@@ -103,7 +107,7 @@ export default {
 }
 
 .login-form {
-  max-width: 400px;
+  width: 300px;
   padding: 20px;
   background-color: #333333; /* Set your desired background color */
   border-radius: 5px;

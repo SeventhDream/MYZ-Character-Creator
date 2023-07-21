@@ -1,7 +1,6 @@
 <template>
   <div class="sideMenu" ref="navbar">
-    <div>
-    </div>
+    <div></div>
     <nav class="navbar fixed-top">
       <div class="container-fluid">
         <button
@@ -21,7 +20,10 @@
           id="offcanvasNavbar"
         >
           <div class="text-left">
-            <div class="username" v-if="username">{{ username }}</div>
+            <div v-if="user && user.username">
+              <!-- Show the username if the user is logged in -->
+              {{ user.username }}
+            </div>
             <button
               type="button"
               class="btn-close btn-close-white d-lg-none"
@@ -134,41 +136,43 @@
 
 <script>
 import eventBus from "../event-bus.js";
+import { ref, onMounted, inject, reactive } from "vue";
 
 export default {
   data() {
     return {
       isMenuVisible: false,
-      username: null,
     };
   },
   mounted() {
     window.addEventListener("resize", this.handleWindowResize);
     this.handleWindowResize();
-
-    this.updateUsername();
   },
+  setup() {
+    // Use the "inject" function to get the store instance
+    const store = reactive(inject("store"));
+
+    const user = ref(null);
+
+    // Subscribe to changes in the Vuex store user state
+    onMounted(() => {
+      user.value = store.state.user;
+      store.subscribe((mutation, state) => {
+        if (mutation.type === "setUser") {
+          user.value = state.user;
+        }
+      });
+    });
+
+    return {
+      user,
+    };
+  },
+
   beforeUnmount() {
     window.removeEventListener("resize", this.handleWindowResize);
   },
   methods: {
-    updateUsername() {
-      console.log("PING");
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        console.log(token);
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const decodedToken = JSON.parse(window.atob(base64));
-        if (decodedToken) {
-          this.username = decodedToken.name;
-        }
-      } else {
-        console.log("no user!");
-        this.username = null; // Reset the username if no token is present
-      }
-    },
     handleWindowResize() {
       if (window.innerWidth >= 992) {
         this.isMenuVisible = true;

@@ -109,7 +109,7 @@ export default {
 }
 
 .login-form {
-  max-width: 400px;
+  width: 300px;
   padding: 20px;
   background-color: #333333; /* Set your desired background color */
   border-radius: 5px;
