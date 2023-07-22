@@ -35,7 +35,7 @@
 
 <script>
 import SignupValidaitons from "@/services/SignupValidations";
-import axios from "axios";
+
 
 export default {
   data() {
@@ -58,14 +58,14 @@ export default {
       }
 
       // Make HTTP request to login endpoint
-      axios
+      this.$axios
         .post("http://localhost:3000/api/login", {
           email: this.email,
           password: this.password,
         })
         .then((response) => {
           // Handle successful login
-          const token = response.data.token;
+          const accessToken = response.data.accessToken;
           const refreshToken = response.data.refreshToken;
           const message = response.data.message;
           const username = response.data.username;
@@ -73,7 +73,7 @@ export default {
           this.$store.dispatch("setUser", {
             username: username,
             refreshToken: refreshToken,
-            token: token,
+            accessToken: accessToken,
           });
           this.success = message;
         })
@@ -86,10 +86,10 @@ export default {
             } else if (data.status === 401) {
               this.errors = { password: data.message };
             } else {
-              console.log("An error occurred:", data.message);
+              alert("An error occurred:", data.message);
             }
           } else {
-            console.log("An error occurred:", error.message);
+            alert("An error occurred:", error.message);
           }
         });
     },

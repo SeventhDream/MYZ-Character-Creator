@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="main">
     <NavBar ref="navbar" />
 
     <div class="container main-content">
@@ -21,8 +21,7 @@
 
 <script>
 import NavBar from "./components/NavBar.vue";
-import axios from "axios";
-
+import { getStorage } from "./storageUtils";
 
 export default {
   name: "App",
@@ -36,37 +35,37 @@ export default {
   },
   methods: {
     getCharacters() {
-      const token = this.$store.state.user.token; // Access the authentication token from the Vuex store
-      if (token) {
-        axios
+      const accessToken = this.$store.state.user.accessToken; // Access the authentication accessToken from the Vuex store
+      if (accessToken) {
+        this.$axios
           .get("http://localhost:3000/characters", {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           })
           .then((response) => {
-            this.characters = response.data;
+            this.characters = response?.data;
           })
           .catch((error) => {
-            console.log(error.response.data);
+            alert(error.response?.data);
           });
       }
     },
   },
   mounted: function () {
-    console.log("App component mounted.");
+    // Check if there's any user info in local storage
+    const storedUser = getStorage("user");
 
-
-    
+    // If user info is found in local storage, set it to the Vuex store
+    if (storedUser) {
+      this.$store.commit("setUser", storedUser);
+    }
   },
-  beforeUnmount() {
-
-  },
+  beforeUnmount() {},
 };
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
 
 .main-content {
   transition: margin-left 0.3s ease-in-out;
@@ -86,8 +85,8 @@ export default {
   background-position: center;
 }
 @media (min-width: 992px) {
-  #app {
-    margin-left: 199px;
+  #main {
+    margin-left: 200px;
   }
 }
 .box {

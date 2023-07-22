@@ -40,7 +40,7 @@
 
 <script>
 import SignupValidaitons from "@/services/SignupValidations";
-import axios from "axios";
+
 import router from "../router";
 
 export default {
@@ -69,7 +69,7 @@ export default {
       }
 
       // Make HTTP request to register endpoint
-      axios
+      this.$axios
         .post("http://localhost:3000/api/register", {
           username: this.username,
           email: this.email,

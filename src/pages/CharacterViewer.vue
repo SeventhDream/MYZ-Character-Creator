@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import axios from "axios";
+
 export default {
   name: "CharacterViewer",
   props: {
@@ -35,14 +35,14 @@ export default {
   },
   methods: {
     deleteCharacter(id) {
-      axios
+      this.$axios
         .delete(`http://localhost:3000/characters/${id}`)
         .then((response) => {
-          console.log(response.data);
+          alert(response.data);
           this.$props.getCharacters();
         })
         .catch((error) => {
-          console.log(error.response.data);
+          alert(error.response.data);
         });
     },
     getCharacterImage(character) {

@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import DOMPurify from 'dompurify';
 
   export default {
       name: 'CharacterCreator',
@@ -59,24 +59,18 @@
         postCharacter: function () {
           
           // Assign a default image URL if the imageUrl field is empty
-          console.log(this.imageUrl);
+
           if (!this.avatar) {
             this.avatar = 'http://localhost:3000/default-profile.jpg';
           }
 
-          console.log({
-            name: this.name,
-            profession: this.profession,
-            mutation: this.mutation,
-            avatar: this.avatar
-          });
           // Make an HTTP POST request to create a new character
-          axios
+          this.$axios
               .post('http://localhost:3000/characters', {
-                name: this.name, // Pass the character's name
-                profession: this.profession, // Pass the character's profession
-                mutation: this.mutation, // Pass the character's mutation
-                avatar: this.avatar
+                name: DOMPurify.sanitize(this.name), // Pass the character's name
+                profession: DOMPurify.sanitize(this.profession), // Pass the character's profession
+                mutation: DOMPurify.sanitize(this.mutation), // Pass the character's mutation
+                avatar: DOMPurify.sanitize(this.avatar)
               });
         }
       }
