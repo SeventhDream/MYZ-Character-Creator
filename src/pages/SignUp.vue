@@ -40,7 +40,7 @@
 
 <script>
 import SignupValidaitons from "@/services/SignupValidations";
-
+import DOMPurify from 'dompurify';
 import router from "../router";
 
 export default {
@@ -71,9 +71,9 @@ export default {
       // Make HTTP request to register endpoint
       this.$axios
         .post("http://localhost:3000/api/register", {
-          username: this.username,
-          email: this.email,
-          password: this.password,
+          username: DOMPurify.sanitize(this.username),
+          email: DOMPurify.sanitize(this.email),
+          password: DOMPurify.sanitize(this.password),
         })
         .then((response) => {
           // Handle successful login

@@ -35,7 +35,7 @@
 
 <script>
 import SignupValidaitons from "@/services/SignupValidations";
-
+import DOMPurify from 'dompurify';
 
 export default {
   data() {
@@ -60,8 +60,8 @@ export default {
       // Make HTTP request to login endpoint
       this.$axios
         .post("http://localhost:3000/api/login", {
-          email: this.email,
-          password: this.password,
+          email: DOMPurify.sanitize(this.email),
+          password: DOMPurify.sanitize(this.password),
         })
         .then((response) => {
           // Handle successful login
