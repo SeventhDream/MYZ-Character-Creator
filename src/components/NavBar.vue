@@ -20,10 +20,14 @@
           id="offcanvasNavbar"
         >
           <div class="text-left">
-            <div v-if="user && user.username">
+            <router-link
+            class="nav-link"
+            to="/user-bio"
+            exact
+            exact-active-class="active" v-if="user && user.username">
               <!-- Show the username if the user is logged in -->
               {{ user.username }}
-            </div>
+          </router-link>
             <button
               type="button"
               class="btn-close btn-close-white d-lg-none"

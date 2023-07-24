@@ -22,15 +22,29 @@
 <script>
 import NavBar from "./components/NavBar.vue";
 import { getStorage } from "./storageUtils";
+import { ref, onMounted, inject, reactive } from "vue";
 
 export default {
   name: "App",
   components: {
     NavBar,
   },
-  data: function () {
+
+  setup() {
+    // Use the "inject" function to get the store instance
+    const store = reactive(inject("store"));
+    const characters = ref("null")
+    // Subscribe to changes in the Vuex store user state
+    onMounted(() => {
+      store.subscribe((mutation) => {
+        if (mutation.type === "setUser") {
+          characters.value = null;
+        }
+      });
+    });
+
     return {
-      characters: null, // Data property to hold the characters retrieved from the server
+      characters,
     };
   },
   methods: {
@@ -66,7 +80,6 @@ export default {
 </script>
 
 <style>
-
 .main-content {
   transition: margin-left 0.3s ease-in-out;
   width: 100vw;

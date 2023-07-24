@@ -1,6 +1,6 @@
 <template>
   <div class="flex-container">
-    <div class="login-form">
+    <div class="signup-form">
       <div class="form-header">
         <h3>Signup</h3>
         <hr />
@@ -108,7 +108,7 @@ export default {
   width: 100%;
 }
 
-.login-form {
+.signup-form {
   width: 300px;
   padding: 20px;
   background-color: #333333; /* Set your desired background color */
